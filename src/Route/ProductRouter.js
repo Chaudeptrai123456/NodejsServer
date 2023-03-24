@@ -1,4 +1,4 @@
-const controller = require("../Controller/ProductRouter")
+const controller = require("../Controller/ProductController")
 const  {checkAccessToken} = require("../middleware/middleware.role")
 const router = require("express").Router()
 module.exports={
