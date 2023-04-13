@@ -9,6 +9,21 @@ const getAllProduct = async()=>{
     const products = await Product.find().lean()
     return products
 }
+
+const getProductfindName = async(name)=>{
+    const result = await Product.findOne({nameProduct:{tags:name}})
+    return result
+}
+// const result = await A.find({ asd: { $regex: /a/ } });
+const createReview= async(productID,userID,description,rate)=>{
+    const result = await db.order.create({
+        userID,
+        productID,
+        rate,
+        description
+    })
+    return result
+}
 module.exports = {
     handlecreateproduct: async (newProduct) => {
         const result = await createproduct(newProduct)
@@ -16,6 +31,14 @@ module.exports = {
     },
     handleFindAllProduct : async()=>{
         const result = await getAllProduct()
+        return result
+    },
+    handleFindByName:async(name)=>{
+        const res = getProductfindName(name)
+        return res
+    },
+    handleCreateReview:async(productID,userID,description,rate)=>{
+        const result = await createReview(productID,userID,description,rate)
         return result
     }
 }

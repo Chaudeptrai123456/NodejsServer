@@ -4,6 +4,7 @@ const router = require("express").Router()
 module.exports={
     route: (app) => {
         router.post("/addneworder",checkAccessToken,controller.handleCreateOrder)
+        router.patch("/addproducttocart",checkAccessToken,controller.handleAddProductToOrder)
         app.use("/order", router)
 }
 }

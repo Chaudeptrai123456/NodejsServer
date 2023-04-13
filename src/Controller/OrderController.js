@@ -1,11 +1,21 @@
-const {handleCreateNewOrder} = require("../service/OrderService")
+const {
+    handleCreateNewOrder,
+    handleAddProducttoOrder
+} = require("../service/OrderService")
 module.exports = {
-    handleCreateOrder:async(req,res)=>{
+    handleCreateOrder: async (req, res) => {
         const {
-            userName,product,total
+            userID,email
         } = req.body
-        const newOrder = { userName,product,total}
-        const result = await handleCreateNewOrder(newOrder)
+        const result = await handleCreateNewOrder(userID,email)
+        return res.status(200).json({
+            result
+        })
+    },
+    handleAddProductToOrder:async(req,res)=>{
+        const {orderID, productID,email} = req.body
+        const quantity = parseInt( req.body.quantity)
+        const result = await handleAddProducttoOrder(orderID, productID, quantity, email)
         return res.status(200).json({result})
     }
 }
