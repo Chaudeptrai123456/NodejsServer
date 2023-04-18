@@ -17,5 +17,11 @@ module.exports = {
         const quantity = parseInt( req.body.quantity)
         const result = await handleAddProducttoOrder(orderID, productID, quantity, email)
         return res.status(200).json({result})
+    },
+    handVerifyOrder: async(req,res)=>{
+        const {orderID} = req.body
+        await sendVerifyOrder(orderID)
+        .then(() => {return res.status(200).json({message:"verify success"})})
+        .catch(err =>{return res.status(400).json({err})})
     }
 }

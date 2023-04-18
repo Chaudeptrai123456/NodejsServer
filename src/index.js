@@ -1,5 +1,6 @@
 const express = require("express")
 const {connectDB}  = require("./connenct/mongoosedb")
+const {handleVerify} = require("../service/Utils/rabbitmq.handle.js")
 require("dotenv").config()
 let route = require("./loaderRoute")
 const app = express();
