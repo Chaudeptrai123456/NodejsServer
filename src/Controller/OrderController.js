@@ -1,6 +1,7 @@
 const {
     handleCreateNewOrder,
-    handleAddProducttoOrder
+    handleAddProducttoOrder,
+    handleVerifyOrder
 } = require("../service/OrderService")
 module.exports = {
     handleCreateOrder: async (req, res) => {
@@ -13,15 +14,14 @@ module.exports = {
         })
     },
     handleAddProductToOrder:async(req,res)=>{
-        const {orderID, productID,email} = req.body
+        const {orderID, productID} = req.body
         const quantity = parseInt( req.body.quantity)
-        const result = await handleAddProducttoOrder(orderID, productID, quantity, email)
+        const result = await handleAddProducttoOrder(orderID, productID, quantity)
         return res.status(200).json({result})
     },
     handVerifyOrder: async(req,res)=>{
         const {orderID} = req.body
-        await sendVerifyOrder(orderID)
-        .then(() => {return res.status(200).json({message:"verify success"})})
-        .catch(err =>{return res.status(400).json({err})})
+        const result  =  await handleVerifyOrder(orderID)
+        return res.status(200).json({result})
     }
 }

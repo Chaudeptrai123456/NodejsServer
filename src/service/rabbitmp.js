@@ -13,36 +13,43 @@ const createChannel = async (conn) => {
     const channel = await conn.createChannel()
     return channel
 }
-const createQueue = async(channel,nameQueue)=>{
+const createQueue = async (channel, nameQueue) => {
     await channel.assertQueue(nameQueue, {
         durable: false,
     })
 }
-const sendMessage = async (nameQueue, channel,order) => {
+const sendMessage = async (nameQueue, channel, order) => {
     await channel.sendToQueue(nameQueue, Buffer.from(JSON.stringify(order)))
 }
-const receiveMessage = async(channel,nameQueue)=>{
-    await channel.consume(nameQueue,(msg) =>
-    {
+const receiveMessage = async (channel, nameQueue) => {
+    await channel.consume(nameQueue, function (msg) {
         return msg
-    },{
-        noAck:true
+    }, {
+        noAck: true
     })
 }
-const sendMessageToQueue = async (nameQueue,object) => {
+const sendMessageToQueue = async (nameQueue, object) => {
     try {
         const conn = await connect()
         const channel = await createChannel(conn)
-        await createQueue(channel,nameQueue)
-        await sendMessage(nameQueue,channel,object)
+        await createQueue(channel, nameQueue)
+        await sendMessage(nameQueue, channel, object)
     } catch (err) {
         console.log(err.message)
     }
 }
-const receiveMessageFromQueue = async (nameQueue)=>{
-        const conn = await connect()
-        const channel = await createChannel(conn)
-        await createQueue(channel,nameQueue)
-        await receiveMessage(channel,nameQueue)
+const receiveMessageFromQueue = async (nameQueue) => {
+    console.log("handle the message from queue")
+    const conn = await connect()
+    const channel = await createChannel(conn)
+    await channel.consume(nameQueue, function (msg) {
+        console.log("message "+msg.content.toString())
+    }, {
+        noAck: true
+    })
+     
 }
-module.exports = {sendMessageToQueue,receiveMessageFromQueue}
+module.exports = {
+    sendMessageToQueue,
+    receiveMessageFromQueue
+}
