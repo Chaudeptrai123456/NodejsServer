@@ -23,7 +23,7 @@ const generateAccessToken = async (user) => {
         role: user.role
     }
     const accessToken = jwt.sign(payload,keyAccess, {
-        expiresIn: "15m"
+        expiresIn: "1d"
     })
 
     return accessToken

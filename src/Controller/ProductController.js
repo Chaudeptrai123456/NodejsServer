@@ -2,11 +2,11 @@ const ProductService = require("../service/ProductService")
 const {
     handlecreateproduct,
     handleFindByName,
-    handleFindAllProduct
+    handlePagination
 } = require("../service/ProductService")
 module.exports = {
     getAllProduct: async(req, res) => {
-        const result = await handleFindAllProduct()
+        const result = await handlePagination(1)
         return res.status(200).json({result})
     },
     createProduct: async (req, res) => {

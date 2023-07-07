@@ -1,5 +1,6 @@
 const amqplib = require("amqplib")
-const amqplib_url = "amqps://kntazpmi:7ZsP2i1Bv5MD5QozAZiB_u3fK5Sd1M3d@armadillo.rmq.cloudamqp.com/kntazpmi"
+require("dotenv").config
+const amqplib_url = process.env.rabbitmq_url
 // const amqplib_docker = "docker"
 const connect = async () => {
     try {
@@ -19,15 +20,15 @@ const createQueue = async (channel, nameQueue) => {
     })
 }
 const sendMessage = async (nameQueue, channel, order) => {
-    await channel.sendToQueue(nameQueue, Buffer.from(JSON.stringify(order)))
+    await channel.sendToQueue(nameQueue, Buffer.from(JSON.stringify(order),{persistent:true}))
 }
-const receiveMessage = async (channel, nameQueue) => {
-    await channel.consume(nameQueue, function (msg) {
-        return msg
-    }, {
-        noAck: true
-    })
-}
+// const receiveMessage = async (channel, nameQueue) => {
+//     await channel.consume(nameQueue, function (msg) {
+//         return msg
+//     }, {
+//         noAck: true
+//     })
+// }
 const sendMessageToQueue = async (nameQueue, object) => {
     try {
         const conn = await connect()

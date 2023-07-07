@@ -35,10 +35,12 @@ const auth_token_params = {
       }).then(resovle=>resovle).catch(rej=>console.log(rej));
 }
 const get_profile_data = async (accessToken) => {
-  return await axios ({
+  console.log("accesstoken "+accessToken)
+  const a =  await axios ({
     method: 'post',
     url: `https://www.googleapis.com/oauth2/v3/userinfo?alt=json&access_token=${accessToken}`,
   });
+  return a
 }
 module.exports = {
     request_get_auth_code_url,clientId,clientSecret,get_access_token,get_profile_data

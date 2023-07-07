@@ -1,5 +1,6 @@
 const db = require("../model/db")
 const Product = db.product
+const size = 5
 const createproduct = async (newProduct) => {
     const product = Product(newProduct)
     product.save().then(() => console.log("create product")).catch(err => console.log("product create error " + err))
@@ -24,6 +25,10 @@ const createReview= async(productID,userID,description,rate)=>{
     })
     return result
 }
+const getProductFromPage = async(page)=>{
+    let result  = await db.product.find().skip((page-1)*size).limit(size)
+    return result
+}
 module.exports = {
     handlecreateproduct: async (newProduct) => {
         const result = await createproduct(newProduct)
@@ -39,6 +44,10 @@ module.exports = {
     },
     handleCreateReview:async(productID,userID,description,rate)=>{
         const result = await createReview(productID,userID,description,rate)
+        return result
+    },
+    handlePagination : async(page)=>{
+        let result =  await getProductFromPage(page)
         return result
     }
 }

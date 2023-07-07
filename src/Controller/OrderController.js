@@ -1,9 +1,14 @@
 const {
     handleCreateNewOrder,
     handleAddProducttoOrder,
-    handleVerifyOrder
+    handleVerifyOrder,
+    handleGetAllProduct
 } = require("../service/OrderService")
 module.exports = {
+    handleGetAllOrder:async(req,res)=>{
+        const result = await handleGetAllProduct()
+        return res.status(200).json({result})
+    },
     handleCreateOrder: async (req, res) => {
         const {
             userID,email

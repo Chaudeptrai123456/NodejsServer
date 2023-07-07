@@ -11,4 +11,4 @@ app.use(express.urlencoded({ extended: true }));
 route.loadRoute(app)
 connectDB()
 const port = process.env.PORT;
-app.listen(port,()=>{console.log("connect 12312312")})
+app.listen(port,()=>{console.log("connect " + port)})

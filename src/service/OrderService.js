@@ -4,6 +4,13 @@ const {
     sendMessageToQueue,
     receiveMessageFromQueue
 } = require("./rabbitmp")
+const {
+    hSetPromise,
+    hGetPromise,
+    setPromise,
+    getPromise
+} = require("../service/Utils/redisService")
+
 const Order = db.order
 const date = new Date()
 const createNewOrder = async (userID, email) => {
@@ -17,11 +24,15 @@ const createNewOrder = async (userID, email) => {
     order.save().then(() => console.log("create order")).catch(err => console.log("create order err" + err))
     return order
 }
-const handleverifyOrderandSendEmail = async(orderID)=>{
+const handleverifyOrderandSendEmail = async (orderID) => {
     const order = await db.order.findById(orderID)
-    order.status="verify"
+    order.status = "verify"
     await order.save()
     return order
+}
+const isOrderVerify = (orderID) => {
+    const order = db.order.findById(orderID)
+    return order.status == "verify"
 }
 const addProducttoOrder = async (orderID, productID, quantity) => {
     try {
@@ -31,28 +42,38 @@ const addProducttoOrder = async (orderID, productID, quantity) => {
             product: product,
             quantity,
             date: date,
+
         })
         order.total += product.price
         await order.save()
         return order
+
+
     } catch (err) {
         console.log(err)
         return err
     }
 }
-// const handleVerifyOrder = async(orderID)=>{
-//     const order = await db.order.findById(orderID)
-//     order.status == "verify"
-//     await order.save().then(()=>{return "verify success"}).catch(()=>{return "failure"})
-// }
- 
+const handleVerifyOrder = async (orderID) => {
+    const order = await db.order.findById(orderID)
+    order.status = "verify"
+    await order.save()
+    return order
+}
+
+const size = 10
 module.exports = {
     handleCreateNewOrder: async (userID, email) => {
-        await createNewOrder(userID, email)
+        let order = await createNewOrder(userID, email)
+        return order
+    },
+    handleGetAllProduct: async () => {
+        const result = await db.order.find()
+        return result
     },
     handleAddProducttoOrder: async (orderID, productID, quantity) => {
         const result = await addProducttoOrder(orderID, productID, quantity)
-        sendMessageToQueue("verifyOrder", result._id)
+        //sendMessageToQueue("verifyOrder", result._id)
         // const message =  await receiveMessageFromQueue("verifyOrder")
         // console.log("handleAddProducttoOrder "+message)
         return result
@@ -62,9 +83,9 @@ module.exports = {
         return result
     },
     handleVerifyOrder: async (orderID) => {
-        const order = await db.order.findById(orderID)
-        sendMessageToQueue("verifyOrderandSendEmail",order._id)
-        console.log("order " + order)
+        const order = await handleVerifyOrder(orderID)
+        // sendMessageToQueue("verifyOrderandSendEmail",order._id)
         return order
-    }
+    },
+
 }
